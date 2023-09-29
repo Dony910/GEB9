@@ -1,17 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "enemy.h"
 
-// Sets default values
 Aenemy::Aenemy()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn'"));
-
-	fsm = CreateDefaultSubobject<UEnemyFSM>(TEXT("FSM"));
-	IsPlayerVisible = false;
 
 	if (tempMesh.Succeeded())
 	{
@@ -24,41 +16,102 @@ Aenemy::Aenemy()
 		UE_LOG(LogTemp, Log, TEXT("Load Mesh Fail"))
 	}
 
+	fsm = CreateDefaultSubobject<UEnemyFSM>(TEXT("FSM"));
 	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AI Perception Component"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
-
-	SightConfig->SightRadius = visibleRange;
-	SightConfig->LoseSightRadius = chaseRange;
-	SightConfig->PeripheralVisionAngleDegrees = visibleFOV;
-	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-
-	SightConfig->SetMaxAge(0.1f);
+	HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
 
 	AIPerception->ConfigureSense(*SightConfig);
+	AIPerception->ConfigureSense(*HearingConfig);
+
 	AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
+
+	SetSightConfig();
+	SetHearingConfig();
+
+	playerExposedTime = 0;
+	playerUnExposedTime = 0;
+	IsPlayerVisible = false;
 }
 
-// Called when the game starts or when spawned
 void Aenemy::BeginPlay()
 {
 	Super::BeginPlay();
 	originPos = GetActorLocation();
 	originRot = GetActorRotation();
+
+	SetSightConfig(500,750,40);
+	player = Cast<ACharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass()));
 }
 
-// Called every frame
 void Aenemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-// Called to bind functionality to input
 void Aenemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
+FVector Aenemy::GetPlayerDir()
+{
+	FVector dst = player->GetActorLocation();
+	return dst - GetActorLocation();
+}
+
+void Aenemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visibleFOV)
+{
+	UAIPerceptionComponent* PerceptionComp = GetComponentByClass<UAIPerceptionComponent>();
+	if (PerceptionComp)
+	{
+		FAISenseID SenseID = UAISense::GetSenseID<UAISense_Sight>();
+		UAISenseConfig_Sight* SenseConfig = Cast<UAISenseConfig_Sight>(PerceptionComp->GetSenseConfig(SenseID));
+		if (SenseConfig)
+		{
+			SenseConfig->SightRadius = _visibleRange;
+			SenseConfig->LoseSightRadius = _chaseRange;
+			SenseConfig->PeripheralVisionAngleDegrees = _visibleFOV;
+
+			SenseConfig->DetectionByAffiliation.bDetectEnemies = true;
+			SenseConfig->DetectionByAffiliation.bDetectFriendlies = true;
+			SenseConfig->DetectionByAffiliation.bDetectNeutrals = true;
+
+			SenseConfig->SetMaxAge(0.1f);
+
+			PerceptionComp->ConfigureSense(*SenseConfig);
+		}
+	}
+}
+
+void Aenemy::SetSightConfig()
+{
+	SetSightConfig(visibleRange, chaseRange, visibleFOV);
+}
+
+void Aenemy::SetHearingConfig(float _hearingRange)
+{
+	UAIPerceptionComponent* PerceptionComp = GetComponentByClass<UAIPerceptionComponent>();
+	if (PerceptionComp)
+	{
+		FAISenseID SenseID = UAISense::GetSenseID<UAISense_Hearing>();
+		UAISenseConfig_Hearing* SenseConfig = Cast<UAISenseConfig_Hearing>(PerceptionComp->GetSenseConfig(SenseID));
+		if (SenseConfig)
+		{
+			SenseConfig->HearingRange = _hearingRange;
+
+			SenseConfig->DetectionByAffiliation.bDetectEnemies = true;
+			SenseConfig->DetectionByAffiliation.bDetectFriendlies = true;
+			SenseConfig->DetectionByAffiliation.bDetectNeutrals = true;
+
+			SenseConfig->SetMaxAge(0.1f);
+
+			PerceptionComp->ConfigureSense(*SenseConfig);
+		}
+	}
+}
+
+void Aenemy::SetHearingConfig()
+{
+	SetHearingConfig(hearingRange);
+}
