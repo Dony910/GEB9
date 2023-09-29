@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,7 +6,9 @@
 #include "EnemyFSM.h"
 
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "AIController.h"
 
 #include "enemy.generated.h"
 
@@ -18,43 +18,56 @@ class GEB9_API Aenemy : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	Aenemy();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = FSMComponent)
 	UEnemyFSM* fsm;
-	UPROPERTY(VisibleAnywhere, Category = FSM)
 	FVector originPos;
 	FRotator originRot;
 
-	UPROPERTY(EditAnywhere, Category = FSM)
-	float visibleRange = 1000;
-	UPROPERTY(EditAnywhere, Category = FSM)
-	float chaseRange = 1500;
-	UPROPERTY(EditAnywhere, Category = FSM)
-	float visibleFOV = 60;
-	UPROPERTY(EditAnywhere, Category = FSM)
-	float chaseSpeed = 0.5;
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float visibleRange;
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float chaseRange;
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float visibleFOV;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Enemy)
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float hearingRange;
+
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float chaseSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = Enemy)
 	UAIPerceptionComponent* AIPerception;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Enemy)
 	UAISenseConfig_Sight* SightConfig;
+	UAISenseConfig_Hearing* HearingConfig;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = FSM);
+	UPROPERTY(VisibleAnywhere, Category = FSM)
+	ACharacter* player;
+
+	UPROPERTY(BlueprintReadWrite, Category = Enemy);
 	bool IsPlayerVisible;
+	UPROPERTY(BlueprintReadWrite, Category = Enemy);
+	float playerExposedTime;
+	UPROPERTY(BlueprintReadWrite, Category = Enemy);
+	float playerUnExposedTime;
 
+	FVector GetPlayerDir();
+
+	void SetSightConfig(float visibleRange, float chaseRange, float visibleFOV);
+	void SetSightConfig();
+
+	void SetHearingConfig(float HearingRange);
+	void SetHearingConfig();
 };

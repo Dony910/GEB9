@@ -1,29 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EnemyFSM.h"
 #include "enemy.h"
 
-// Sets default values for this component's properties
 UEnemyFSM::UEnemyFSM()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	// ...
 }
 
 
-// Called when the game starts
 void UEnemyFSM::BeginPlay()
 {
 	Super::BeginPlay();
-	player = Cast<ACharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass()));
 	me = Cast<Aenemy>(GetOwner());
 }
 
 
-// Called every frame
 void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -31,63 +21,72 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	switch (mstate)
 	{
 	case EEnemyState::Patrol:
-		PatrolState();
+		PatrolState(DeltaTime);
 		break;
 	case EEnemyState::Alert:
-		AlertState();
+		AlertState(DeltaTime);
 		break;
 	case EEnemyState::Check:
-		CheckState();
+		CheckState(DeltaTime);
 		break;
 	case EEnemyState::Chase:
-		ChaseState();
+		ChaseState(DeltaTime);
 		break;
 	case EEnemyState::Return:
-		ReturnState();
+		ReturnState(DeltaTime);
 		break;
 	case EEnemyState::Neutralize:
-		NeutralizeState();
+		NeutralizeState(DeltaTime);
 		break;
 	}
-
-	FVector dst = player->GetActorLocation();
-	FVector dir = dst - me->GetActorLocation();
-	if (dir.Length() > me->chaseRange)
-	{
-		me->IsPlayerVisible = false;
-	}
-
-	// ...
 }
-void UEnemyFSM::PatrolState()
+void UEnemyFSM::PatrolState(float DeltaTime)
 {
-	if (me->IsPlayerVisible)
+	if (me->playerExposedTime > 2.0f)
 	{
 		mstate = EEnemyState::Chase;
+		me->playerExposedTime = 0.0f;
 	}
 };
-void UEnemyFSM::AlertState() {};
-void UEnemyFSM::CheckState() {};
-void UEnemyFSM::ChaseState()
+void UEnemyFSM::AlertState(float DeltaTime) {};
+void UEnemyFSM::CheckState(float DeltaTime) {};
+void UEnemyFSM::ChaseState(float DeltaTime)
 {
-	FVector dst = player->GetActorLocation();
-	FVector dir = dst - me->GetActorLocation();
-	if (!me->IsPlayerVisible)
+	FRotator rot = me->GetPlayerDir().Rotation();
+	rot.Pitch = 0;
+	rot.Roll = 0;
+	me->SetActorRotation(rot);
+	me->AddMovementInput(me->GetPlayerDir().GetSafeNormal(), me->chaseSpeed* DeltaTime);
+
+	if (me->playerUnExposedTime>1.0f)
 	{
 		mstate = EEnemyState::Return;
+
+		me->playerUnExposedTime = 0.0f;
 	}
-	me->AddMovementInput(dir.GetSafeNormal(), me->chaseSpeed);
 };
-void UEnemyFSM::AttackState() {};
-void UEnemyFSM::ReturnState()
+
+void UEnemyFSM::AttackState(float DeltaTime) {};
+void UEnemyFSM::ReturnState(float DeltaTime)
 {
 	FVector dir = me->originPos - me->GetActorLocation();
-	me->AddMovementInput(dir.GetSafeNormal(), me->chaseSpeed);
+	FRotator rot = dir.Rotation();
+	rot.Pitch = 0;
+	rot.Roll = 0;
+	me->SetActorRotation(rot);
+	me->AddMovementInput(dir.GetSafeNormal(), me->chaseSpeed* DeltaTime);
+
 	if ((me->originPos - me->GetActorLocation()).Length() < 1)
 	{
-		me->SetActorLocationAndRotation(me->originPos, me->originRot);
 		mstate = EEnemyState::Patrol;
+
+		me->SetActorLocationAndRotation(me->originPos, me->originRot);
+	}
+	else if (me->playerExposedTime > 1.0f)
+	{
+		mstate = EEnemyState::Chase;
+
+		me->playerExposedTime = 0.0f;
 	}
 };
-void UEnemyFSM::NeutralizeState() {};
-
+void UEnemyFSM::NeutralizeState(float DeltaTime) {};
