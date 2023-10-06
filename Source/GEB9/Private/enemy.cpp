@@ -40,8 +40,12 @@ void Aenemy::BeginPlay()
 	originPos = GetActorLocation();
 	originRot = GetActorRotation();
 
-	SetSightConfig(500,750,40);
+
 	player = Cast<ACharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass()));
+	ai = Cast<AAIController>(GetController());
+	enemyMovement = GetCharacterMovement();
+
+	SetStateProperty(PatrolState);
 }
 
 void Aenemy::Tick(float DeltaTime)
@@ -58,6 +62,19 @@ FVector Aenemy::GetPlayerDir()
 {
 	FVector dst = player->GetActorLocation();
 	return dst - GetActorLocation();
+}
+
+void Aenemy::SetStateProperty(FStateProperty stateproperty) {
+	visibleRange = stateproperty.visibleRange;
+	visibleFOV = stateproperty.visibleFOV;
+	chaseRange = stateproperty.chaseRange;
+	hearingRange = stateproperty.hearingRange;
+	chaseSpeed = stateproperty.chaseSpeed;
+	if (enemyMovement) {
+		enemyMovement->MaxWalkSpeed = chaseSpeed;
+	}
+	SetSightConfig();
+	SetHearingConfig();
 }
 
 void Aenemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visibleFOV)

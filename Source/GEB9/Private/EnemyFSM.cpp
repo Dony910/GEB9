@@ -45,6 +45,7 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 	if (me->playerExposedTime > 2.0f)
 	{
 		mstate = EEnemyState::Chase;
+		me->SetStateProperty(me->ChaseState);
 		me->playerExposedTime = 0.0f;
 	}
 };
@@ -56,11 +57,12 @@ void UEnemyFSM::ChaseState(float DeltaTime)
 	rot.Pitch = 0;
 	rot.Roll = 0;
 	me->SetActorRotation(rot);
-	me->AddMovementInput(me->GetPlayerDir().GetSafeNormal(), me->chaseSpeed* DeltaTime);
+	me->ai->MoveToLocation(me->player->GetActorLocation());
 
 	if (me->playerUnExposedTime>1.0f)
 	{
 		mstate = EEnemyState::Return;
+		me->SetStateProperty(me->ReturnState);
 
 		me->playerUnExposedTime = 0.0f;
 	}
@@ -74,17 +76,19 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 	rot.Pitch = 0;
 	rot.Roll = 0;
 	me->SetActorRotation(rot);
-	me->AddMovementInput(dir.GetSafeNormal(), me->chaseSpeed* DeltaTime);
+	me->ai->MoveToLocation(me->originPos);
 
-	if ((me->originPos - me->GetActorLocation()).Length() < 1)
+	if ((me->originPos - me->GetActorLocation()).Length() < 100)
 	{
 		mstate = EEnemyState::Patrol;
+		me->SetStateProperty(me->PatrolState);
 
 		me->SetActorLocationAndRotation(me->originPos, me->originRot);
 	}
 	else if (me->playerExposedTime > 1.0f)
 	{
 		mstate = EEnemyState::Chase;
+		me->SetStateProperty(me->ChaseState);
 
 		me->playerExposedTime = 0.0f;
 	}
