@@ -42,22 +42,68 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 }
 void UEnemyFSM::PatrolState(float DeltaTime)
 {
-	if (me->playerExposedTime > 2.0f)
+	if (me->playerExposedTime > 0.5f)
+	{
+		mstate = EEnemyState::Alert;
+		me->SetStateProperty(me->AlertState);
+		me->playerExposedTime = 0.0f;
+	}
+	else if (me->soundHeardTime > 5.0f)
+	{
+		mstate = EEnemyState::Check;
+		me->checkTarget = me->player->GetActorLocation();
+		me->SetStateProperty(me->CheckState);
+		me->soundHeardTime = 0.0f;
+	}
+};
+void UEnemyFSM::AlertState(float DeltaTime) {
+	if (me->playerExposedTime > 0.75f)
 	{
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
 		me->playerExposedTime = 0.0f;
 	}
+	else if (me->soundHeardTime > 2.0f)
+	{
+		mstate = EEnemyState::Check;
+		me->checkTarget = me->player->GetActorLocation();
+		me->SetStateProperty(me->CheckState);
+		me->soundHeardTime = 0.0f;
+	}
+	else if (me->playerUnExposedTime > 5.0f)
+	{
+		mstate = EEnemyState::Return;
+		me->SetStateProperty(me->ReturnState);
+		me->playerUnExposedTime = 0.0f;
+	}
 };
-void UEnemyFSM::AlertState(float DeltaTime) {};
-void UEnemyFSM::CheckState(float DeltaTime) {};
-void UEnemyFSM::ChaseState(float DeltaTime)
-{
-	FRotator rot = me->GetPlayerDir().Rotation();
+void UEnemyFSM::CheckState(float DeltaTime) {
+	me->ai->MoveToLocation(me->checkTarget);
+	FRotator rot = me->enemyMovement->Velocity.Rotation();
 	rot.Pitch = 0;
 	rot.Roll = 0;
 	me->SetActorRotation(rot);
+	if (me->playerExposedTime > 0.75f)
+	{
+		mstate = EEnemyState::Chase;
+		me->SetStateProperty(me->ChaseState);
+		me->playerExposedTime = 0.0f;
+	}
+	else if ((me->checkTarget - me->GetActorLocation()).Length() < 50.0f)
+	{
+		mstate = EEnemyState::Alert;
+		me->SetStateProperty(me->AlertState);
+		me->playerExposedTime = 0.0f;
+		me->ai->StopMovement();
+	}
+};
+void UEnemyFSM::ChaseState(float DeltaTime)
+{
 	me->ai->MoveToLocation(me->player->GetActorLocation());
+	FRotator rot = me->enemyMovement->Velocity.Rotation();
+	rot.Pitch = 0;
+	rot.Roll = 0;
+	me->SetActorRotation(rot);
 
 	if (me->playerUnExposedTime>1.0f)
 	{
@@ -72,25 +118,26 @@ void UEnemyFSM::AttackState(float DeltaTime) {};
 void UEnemyFSM::ReturnState(float DeltaTime)
 {
 	FVector dir = me->originPos - me->GetActorLocation();
-	FRotator rot = dir.Rotation();
+	FRotator rot = me->enemyMovement->Velocity.Rotation();
 	rot.Pitch = 0;
 	rot.Roll = 0;
 	me->SetActorRotation(rot);
 	me->ai->MoveToLocation(me->originPos);
 
-	if ((me->originPos - me->GetActorLocation()).Length() < 100)
-	{
-		mstate = EEnemyState::Patrol;
-		me->SetStateProperty(me->PatrolState);
-
-		me->SetActorLocationAndRotation(me->originPos, me->originRot);
-	}
-	else if (me->playerExposedTime > 1.0f)
+	if (me->playerExposedTime > 1.0f)
 	{
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
 
 		me->playerExposedTime = 0.0f;
+	}
+	else if ((me->originPos - me->GetActorLocation()).Length() < 50.0f)
+	{
+		mstate = EEnemyState::Patrol;
+		me->SetStateProperty(me->PatrolState);
+		me->ai->StopMovement();
+		me->SetActorLocation(me->originPos);
+		me->SetActorRotation(me->originRot);
 	}
 };
 void UEnemyFSM::NeutralizeState(float DeltaTime) {};

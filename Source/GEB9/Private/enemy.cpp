@@ -65,11 +65,11 @@ FVector Aenemy::GetPlayerDir()
 }
 
 void Aenemy::SetStateProperty(FStateProperty stateproperty) {
-	visibleRange = stateproperty.visibleRange;
-	visibleFOV = stateproperty.visibleFOV;
-	chaseRange = stateproperty.chaseRange;
-	hearingRange = stateproperty.hearingRange;
-	chaseSpeed = stateproperty.chaseSpeed;
+	visibleRange = stateproperty.visibleRange*efficeiencyState.visibleRange;
+	visibleFOV = stateproperty.visibleFOV * efficeiencyState.visibleFOV;
+	chaseRange = stateproperty.chaseRange * efficeiencyState.chaseRange;
+	hearingRange = stateproperty.hearingRange * efficeiencyState.hearingRange;
+	chaseSpeed = stateproperty.chaseSpeed * efficeiencyState.chaseSpeed;
 	if (enemyMovement) {
 		enemyMovement->MaxWalkSpeed = chaseSpeed;
 	}
@@ -131,4 +131,20 @@ void Aenemy::SetHearingConfig(float _hearingRange)
 void Aenemy::SetHearingConfig()
 {
 	SetHearingConfig(hearingRange);
+}
+
+void Aenemy::lightout() {
+	efficeiencyState.visibleRange=0.5;
+	efficeiencyState.chaseRange =0.5;
+	efficeiencyState.visibleFOV=1;
+	efficeiencyState.hearingRange=1.2;
+	efficeiencyState.chaseSpeed=1;
+}
+
+void Aenemy::lighton() {
+	efficeiencyState.visibleRange = 1;
+	efficeiencyState.chaseRange = 1;
+	efficeiencyState.visibleFOV = 1;
+	efficeiencyState.hearingRange = 1;
+	efficeiencyState.chaseSpeed = 1;
 }

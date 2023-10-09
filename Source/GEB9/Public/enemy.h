@@ -17,15 +17,15 @@ struct FStateProperty {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float visibleRange;
+	float visibleRange=500;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float chaseRange;
+	float chaseRange=750;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float visibleFOV;
+	float visibleFOV=40;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float hearingRange;
+	float hearingRange=750;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float chaseSpeed;
+	float chaseSpeed=400;
 };
 
 UCLASS()
@@ -47,8 +47,12 @@ public:
 public:
 	UPROPERTY(BlueprintReadOnly);
 	UEnemyFSM* fsm;
+	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	FVector originPos;
+	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	FRotator originRot;
+	UPROPERTY(VisibleAnywhere, Category = Enemy)
+	FVector checkTarget;
 
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float visibleRange;
@@ -64,9 +68,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	FStateProperty PatrolState;
 	UPROPERTY(EditAnywhere, Category = Enemy)
+	FStateProperty AlertState;
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	FStateProperty CheckState;
+	UPROPERTY(EditAnywhere, Category = Enemy)
 	FStateProperty ReturnState;
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	FStateProperty ChaseState;
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	FStateProperty efficeiencyState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Enemy)
 	UAIPerceptionComponent* AIPerception;
@@ -85,6 +95,12 @@ public:
 	float playerExposedTime;
 	UPROPERTY(BlueprintReadWrite, Category = Enemy)
 	float playerUnExposedTime;
+	UPROPERTY(BlueprintReadWrite, Category = Enemy)
+	bool IsHeard;
+	UPROPERTY(BlueprintReadWrite, Category = Enemy)
+	float soundHeardTime;
+	UPROPERTY(BlueprintReadWrite, Category = Enemy)
+	float soundUnHeardTime;
 
 	FVector GetPlayerDir();
 
@@ -95,4 +111,7 @@ public:
 
 	void SetHearingConfig(float HearingRange);
 	void SetHearingConfig();
+
+	void lightout();
+	void lighton();
 };
