@@ -43,5 +43,5 @@ public:
 	void NeutralizeState(float DeltaTime);
 
 	UPROPERTY(VisibleAnywhere)
-	class Aenemy* me;
+	class AEnemy* me;
 };

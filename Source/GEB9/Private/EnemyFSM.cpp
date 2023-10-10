@@ -10,7 +10,7 @@ UEnemyFSM::UEnemyFSM()
 void UEnemyFSM::BeginPlay()
 {
 	Super::BeginPlay();
-	me = Cast<Aenemy>(GetOwner());
+	me = Cast<AEnemy>(GetOwner());
 }
 
 

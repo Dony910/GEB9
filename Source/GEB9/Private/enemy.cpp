@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-Aenemy::Aenemy()
+AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn'"));
@@ -34,7 +34,7 @@ Aenemy::Aenemy()
 	IsPlayerVisible = false;
 }
 
-void Aenemy::BeginPlay()
+void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	originPos = GetActorLocation();
@@ -48,23 +48,23 @@ void Aenemy::BeginPlay()
 	SetStateProperty(PatrolState);
 }
 
-void Aenemy::Tick(float DeltaTime)
+void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void Aenemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-FVector Aenemy::GetPlayerDir()
+FVector AEnemy::GetPlayerDir()
 {
 	FVector dst = player->GetActorLocation();
 	return dst - GetActorLocation();
 }
 
-void Aenemy::SetStateProperty(FStateProperty stateproperty) {
+void AEnemy::SetStateProperty(FStateProperty stateproperty) {
 	visibleRange = stateproperty.visibleRange*efficeiencyState.visibleRange;
 	visibleFOV = stateproperty.visibleFOV * efficeiencyState.visibleFOV;
 	chaseRange = stateproperty.chaseRange * efficeiencyState.chaseRange;
@@ -77,7 +77,7 @@ void Aenemy::SetStateProperty(FStateProperty stateproperty) {
 	SetHearingConfig();
 }
 
-void Aenemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visibleFOV)
+void AEnemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visibleFOV)
 {
 	UAIPerceptionComponent* PerceptionComp = GetComponentByClass<UAIPerceptionComponent>();
 	if (PerceptionComp)
@@ -101,12 +101,12 @@ void Aenemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visib
 	}
 }
 
-void Aenemy::SetSightConfig()
+void AEnemy::SetSightConfig()
 {
 	SetSightConfig(visibleRange, chaseRange, visibleFOV);
 }
 
-void Aenemy::SetHearingConfig(float _hearingRange)
+void AEnemy::SetHearingConfig(float _hearingRange)
 {
 	UAIPerceptionComponent* PerceptionComp = GetComponentByClass<UAIPerceptionComponent>();
 	if (PerceptionComp)
@@ -128,12 +128,12 @@ void Aenemy::SetHearingConfig(float _hearingRange)
 	}
 }
 
-void Aenemy::SetHearingConfig()
+void AEnemy::SetHearingConfig()
 {
 	SetHearingConfig(hearingRange);
 }
 
-void Aenemy::lightout() {
+void AEnemy::lightout() {
 	efficeiencyState.visibleRange=0.5;
 	efficeiencyState.chaseRange =0.5;
 	efficeiencyState.visibleFOV=1;
@@ -141,7 +141,7 @@ void Aenemy::lightout() {
 	efficeiencyState.chaseSpeed=1;
 }
 
-void Aenemy::lighton() {
+void AEnemy::lighton() {
 	efficeiencyState.visibleRange = 1;
 	efficeiencyState.chaseRange = 1;
 	efficeiencyState.visibleFOV = 1;

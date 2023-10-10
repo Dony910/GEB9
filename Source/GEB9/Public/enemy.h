@@ -29,12 +29,12 @@ struct FStateProperty {
 };
 
 UCLASS()
-class GEB9_API Aenemy : public ACharacter
+class GEB9_API AEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	Aenemy();
+	AEnemy();
 
 protected:
 	virtual void BeginPlay() override;
