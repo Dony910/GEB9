@@ -79,10 +79,7 @@ void UEnemyFSM::AlertState(float DeltaTime) {
 };
 void UEnemyFSM::CheckState(float DeltaTime) {
 	me->ai->MoveToLocation(me->checkTarget);
-	FRotator rot = me->enemyMovement->Velocity.Rotation();
-	rot.Pitch = 0;
-	rot.Roll = 0;
-	me->SetActorRotation(rot);
+
 	if (me->playerExposedTime > 0.75f)
 	{
 		mstate = EEnemyState::Chase;
@@ -100,10 +97,6 @@ void UEnemyFSM::CheckState(float DeltaTime) {
 void UEnemyFSM::ChaseState(float DeltaTime)
 {
 	me->ai->MoveToLocation(me->player->GetActorLocation());
-	FRotator rot = me->enemyMovement->Velocity.Rotation();
-	rot.Pitch = 0;
-	rot.Roll = 0;
-	me->SetActorRotation(rot);
 
 	if (me->playerUnExposedTime>1.0f)
 	{
@@ -118,10 +111,7 @@ void UEnemyFSM::AttackState(float DeltaTime) {};
 void UEnemyFSM::ReturnState(float DeltaTime)
 {
 	FVector dir = me->originPos - me->GetActorLocation();
-	FRotator rot = me->enemyMovement->Velocity.Rotation();
-	rot.Pitch = 0;
-	rot.Roll = 0;
-	me->SetActorRotation(rot);
+
 	me->ai->MoveToLocation(me->originPos);
 
 	if (me->playerExposedTime > 1.0f)
