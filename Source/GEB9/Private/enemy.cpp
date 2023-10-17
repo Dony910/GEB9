@@ -51,6 +51,7 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (enemyMovement->Velocity.Length() != 0) Turn();
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -147,4 +148,12 @@ void AEnemy::lighton() {
 	efficeiencyState.visibleFOV = 1;
 	efficeiencyState.hearingRange = 1;
 	efficeiencyState.chaseSpeed = 1;
+}
+
+void AEnemy::Turn() {
+	FRotator rot = enemyMovement->Velocity.Rotation();
+	rot.Pitch = 0;
+	rot.Roll = 0;
+	SetActorRotation(FQuat::Slerp(RootComponent->GetComponentRotation().Quaternion(), rot.Quaternion(), 0.3f));
+	//SetActorRotation(rot);
 }

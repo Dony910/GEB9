@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #include "EnemyFSM.h"
 
@@ -114,4 +115,6 @@ public:
 
 	void lightout();
 	void lighton();
+
+	void Turn();
 };
