@@ -157,3 +157,17 @@ void AEnemy::Turn() {
 	SetActorRotation(FQuat::Slerp(RootComponent->GetComponentRotation().Quaternion(), rot.Quaternion(), 0.3f));
 	//SetActorRotation(rot);
 }
+
+void AEnemy::Patrol() {
+	if(!locations.IsEmpty())
+	{
+		if(!ai->IsFollowingAPath())
+		{
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(11, 0.1f, FColor::Yellow, FString::Printf(TEXT("%d, %d, %d"), locations[0]->GetActorLocation().X, locations[0]->GetActorLocation().Y, locations[0]->GetActorLocation().Z));
+			ai->MoveToLocation(locations[0]->GetActorLocation());
+			/*locations.Emplace(locations[0]);
+			locations.RemoveAt(0);*/
+		}
+	}
+}

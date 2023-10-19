@@ -42,6 +42,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 }
 void UEnemyFSM::PatrolState(float DeltaTime)
 {
+	me->Patrol();
 	if (me->playerExposedTime > 0.5f)
 	{
 		mstate = EEnemyState::Alert;

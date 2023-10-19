@@ -103,6 +103,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Enemy)
 	float soundUnHeardTime;
 
+	UPROPERTY(EditAnywhere, Category = PahtLocations)
+	TArray<AActor*> locations;
+
 	FVector GetPlayerDir();
 
 	void SetStateProperty(FStateProperty stateproperty);
@@ -117,4 +120,6 @@ public:
 	void lighton();
 
 	void Turn();
+
+	void Patrol();
 };
