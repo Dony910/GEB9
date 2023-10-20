@@ -161,13 +161,16 @@ void AEnemy::Turn() {
 void AEnemy::Patrol() {
 	if(!locations.IsEmpty())
 	{
-		if(!ai->IsFollowingAPath())
+		EPathFollowingRequestResult::Type followResult;
+		followResult = ai->MoveToLocation(locations[0]->GetActorLocation(), 10.0f);
+		switch(followResult)
 		{
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(11, 0.1f, FColor::Yellow, FString::Printf(TEXT("%d, %d, %d"), locations[0]->GetActorLocation().X, locations[0]->GetActorLocation().Y, locations[0]->GetActorLocation().Z));
-			ai->MoveToLocation(locations[0]->GetActorLocation());
+		case EPathFollowingRequestResult::AlreadyAtGoal:
+			GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, TEXT("SEX!"));
 			/*locations.Emplace(locations[0]);
 			locations.RemoveAt(0);*/
 		}
+		if (GEngine && followResult != NULL)
+			GEngine->AddOnScreenDebugMessage(11, 0.1f, FColor::Yellow, UEnum::GetValueAsString(followResult));
 	}
 }
