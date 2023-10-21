@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AIPerceptionComponent.h"
+
 #include "CCTVbase.generated.h"
 
 UCLASS()
@@ -27,4 +31,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sight)
+	float visibleRange;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sight)
+	float chaseRange;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sight)
+	float visibleFOV;
+
+	UAISenseConfig_Sight* SightConfig;
+	void SetSightConfig(float visibleRange, float chaseRange, float visibleFOV);
 };
