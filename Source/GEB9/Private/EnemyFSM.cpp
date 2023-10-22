@@ -48,7 +48,7 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 		me->SetStateProperty(me->AlertState);
 		me->playerExposedTime = 0.0f;
 	}
-	else if (me->soundHeardTime > 5.0f)
+	else if (me->soundHeardTime > 5.0f || me->cctvdetected)
 	{
 		mstate = EEnemyState::Check;
 		me->checkTarget = me->player->GetActorLocation();
@@ -56,8 +56,9 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 		me->soundHeardTime = 0.0f;
 	}
 };
+
 void UEnemyFSM::AlertState(float DeltaTime) {
-	if (me->playerExposedTime > 0.75f)
+	if (me->playerExposedTime > 0.75f || me->cctvdetected)
 	{
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
@@ -77,10 +78,11 @@ void UEnemyFSM::AlertState(float DeltaTime) {
 		me->playerUnExposedTime = 0.0f;
 	}
 };
+
 void UEnemyFSM::CheckState(float DeltaTime) {
 	me->ai->MoveToLocation(me->checkTarget);
 
-	if (me->playerExposedTime > 0.75f)
+	if (me->playerExposedTime > 0.75f || me->cctvdetected)
 	{
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
@@ -94,15 +96,15 @@ void UEnemyFSM::CheckState(float DeltaTime) {
 		me->ai->StopMovement();
 	}
 };
+
 void UEnemyFSM::ChaseState(float DeltaTime)
 {
 	me->ai->MoveToLocation(me->player->GetActorLocation());
 
-	if (me->playerUnExposedTime>1.0f)
+	if (me->playerUnExposedTime>1.0f && !me->cctvdetected)
 	{
 		mstate = EEnemyState::Return;
 		me->SetStateProperty(me->ReturnState);
-
 		me->playerUnExposedTime = 0.0f;
 	}
 };
@@ -114,7 +116,7 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 
 	me->ai->MoveToLocation(me->originPos);
 
-	if (me->playerExposedTime > 1.0f)
+	if (me->playerExposedTime > 1.0f || me->cctvdetected)
 	{
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);

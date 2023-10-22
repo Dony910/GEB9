@@ -103,6 +103,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Enemy)
 	float soundUnHeardTime;
 
+	UPROPERTY(BlueprintReadWrite, Category = Enemy)
+	bool cctvdetected;
+
 	FVector GetPlayerDir();
 
 	void SetStateProperty(FStateProperty stateproperty);
