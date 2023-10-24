@@ -42,7 +42,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 }
 void UEnemyFSM::PatrolState(float DeltaTime)
 {
-	me->Patrol();
+	me->Patrol(DeltaTime);
 	if (me->playerExposedTime > 0.5f)
 	{
 		me->ai->StopMovement();
