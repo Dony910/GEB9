@@ -148,6 +148,7 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 	{
 		mstate = EEnemyState::Patrol;
 		me->locationIndex = minIndex;
+		me->patrolDelay = 0.0f;
 		me->SetStateProperty(me->PatrolState);
 		me->ai->StopMovement();
 	}

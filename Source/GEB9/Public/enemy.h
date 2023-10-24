@@ -131,6 +131,6 @@ public:
 	void Patrol(float DeltaTime);
 
 	int locationIndex;
-private:
+
 	float patrolTimer;
 };
