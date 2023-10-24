@@ -32,6 +32,8 @@ AEnemy::AEnemy()
 	playerExposedTime = 0;
 	playerUnExposedTime = 0;
 	IsPlayerVisible = false;
+
+	locationIndex = 0;
 }
 
 void AEnemy::BeginPlay()
@@ -156,4 +158,20 @@ void AEnemy::Turn() {
 	rot.Roll = 0;
 	SetActorRotation(FQuat::Slerp(RootComponent->GetComponentRotation().Quaternion(), rot.Quaternion(), 0.3f));
 	//SetActorRotation(rot);
+}
+
+void AEnemy::Patrol() {
+	if (!locations.IsEmpty())
+	{
+		ai->MoveToLocation(locations[locationIndex]->GetActorLocation());
+		FVector targetDirection = GetActorLocation() - locations[locationIndex]->GetActorLocation();
+		targetDirection.Z = 0;
+		GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, FString::SanitizeFloat(targetDirection.Length()));
+		if (targetDirection.Length() < 50.0f) {
+			locationIndex++;
+			if (locationIndex >= locations.Num())
+				locationIndex = 0;
+		}
+		
+	}
 }
