@@ -45,12 +45,14 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 	me->Patrol();
 	if (me->playerExposedTime > 0.5f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Alert;
 		me->SetStateProperty(me->AlertState);
 		me->playerExposedTime = 0.0f;
 	}
 	else if (me->soundHeardTime > 5.0f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Check;
 		me->checkTarget = me->player->GetActorLocation();
 		me->SetStateProperty(me->CheckState);
@@ -60,12 +62,14 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 void UEnemyFSM::AlertState(float DeltaTime) {
 	if (me->playerExposedTime > 0.75f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
 		me->playerExposedTime = 0.0f;
 	}
 	else if (me->soundHeardTime > 2.0f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Check;
 		me->checkTarget = me->player->GetActorLocation();
 		me->SetStateProperty(me->CheckState);
@@ -73,6 +77,7 @@ void UEnemyFSM::AlertState(float DeltaTime) {
 	}
 	else if (me->playerUnExposedTime > 5.0f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Return;
 		me->SetStateProperty(me->ReturnState);
 		me->playerUnExposedTime = 0.0f;
@@ -83,6 +88,7 @@ void UEnemyFSM::CheckState(float DeltaTime) {
 
 	if (me->playerExposedTime > 0.75f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
 		me->playerExposedTime = 0.0f;
@@ -101,6 +107,7 @@ void UEnemyFSM::ChaseState(float DeltaTime)
 
 	if (me->playerUnExposedTime>1.0f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Return;
 		me->SetStateProperty(me->ReturnState);
 
@@ -111,24 +118,36 @@ void UEnemyFSM::ChaseState(float DeltaTime)
 void UEnemyFSM::AttackState(float DeltaTime) {};
 void UEnemyFSM::ReturnState(float DeltaTime)
 {
-	FVector dir = me->originPos - me->GetActorLocation();
+	FVector minDirection = FVector(1000000, 0 ,0);
+	int minIndex = 0;
+	for (int i = 0; i < me->locations.Num(); i++) {
+		FVector locationDirection = (me->locations[i]->GetActorLocation() - me->GetActorLocation());
 
-	me->ai->MoveToLocation(me->originPos);
+		if (minDirection.Length() > locationDirection.Length()) {
+			minDirection = locationDirection;
+			minIndex = i;
+		}
+	};
+	AActor* minLocation = me->locations[minIndex];
+
+	me->ai->MoveToLocation(minLocation->GetActorLocation());
+
+	minDirection.Z = 0;
 
 	if (me->playerExposedTime > 1.0f)
 	{
+		me->ai->StopMovement();
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
 
 		me->playerExposedTime = 0.0f;
 	}
-	else if ((me->originPos - me->GetActorLocation()).Length() < 50.0f)
+	else if (minDirection.Length() < 50.0f)
 	{
 		mstate = EEnemyState::Patrol;
+		me->locationIndex = minIndex;
 		me->SetStateProperty(me->PatrolState);
 		me->ai->StopMovement();
-		me->SetActorLocation(me->originPos);
-		me->SetActorRotation(me->originRot);
 	}
 };
 void UEnemyFSM::NeutralizeState(float DeltaTime) {};

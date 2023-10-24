@@ -122,4 +122,6 @@ public:
 	void Turn();
 
 	void Patrol();
+
+	int locationIndex;
 };

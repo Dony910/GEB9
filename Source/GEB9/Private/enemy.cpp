@@ -32,6 +32,8 @@ AEnemy::AEnemy()
 	playerExposedTime = 0;
 	playerUnExposedTime = 0;
 	IsPlayerVisible = false;
+
+	locationIndex = 0;
 }
 
 void AEnemy::BeginPlay()
@@ -159,18 +161,17 @@ void AEnemy::Turn() {
 }
 
 void AEnemy::Patrol() {
-	if(!locations.IsEmpty())
+	if (!locations.IsEmpty())
 	{
-		EPathFollowingRequestResult::Type followResult;
-		followResult = ai->MoveToLocation(locations[0]->GetActorLocation(), 10.0f);
-		switch(followResult)
-		{
-		case EPathFollowingRequestResult::AlreadyAtGoal:
-			GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, TEXT("SEX!"));
-			/*locations.Emplace(locations[0]);
-			locations.RemoveAt(0);*/
+		ai->MoveToLocation(locations[locationIndex]->GetActorLocation());
+		FVector targetDirection = GetActorLocation() - locations[locationIndex]->GetActorLocation();
+		targetDirection.Z = 0;
+		GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, FString::SanitizeFloat(targetDirection.Length()));
+		if (targetDirection.Length() < 50.0f) {
+			locationIndex++;
+			if (locationIndex >= locations.Num())
+				locationIndex = 0;
 		}
-		if (GEngine && followResult != NULL)
-			GEngine->AddOnScreenDebugMessage(11, 0.1f, FColor::Yellow, UEnum::GetValueAsString(followResult));
+		
 	}
 }
