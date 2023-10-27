@@ -42,7 +42,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 }
 void UEnemyFSM::PatrolState(float DeltaTime)
 {
-	me->Patrol();
+	me->Patrol(DeltaTime);
 	if (me->playerExposedTime > 0.5f)
 	{
 		me->ai->StopMovement();
@@ -148,6 +148,7 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 	{
 		mstate = EEnemyState::Patrol;
 		me->locationIndex = minIndex;
+		me->patrolDelay = 0.0f;
 		me->SetStateProperty(me->PatrolState);
 		me->ai->StopMovement();
 	}
