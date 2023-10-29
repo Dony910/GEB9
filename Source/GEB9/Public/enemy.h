@@ -106,10 +106,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = Enemy)
 	bool cctvdetected;
-
-	UPROPERTY(EditAnywhere, Category = Enemy)
-	float patrolDelay;
-
 	UPROPERTY(EditAnywhere, Category = PahtLocations)
 	TArray<AActor *> locations;
 
@@ -128,9 +124,7 @@ public:
 
 	void Turn();
 
-	void Patrol(float DeltaTime);
+	void Patrol();
 
 	int locationIndex;
-
-	float patrolTimer;
 };

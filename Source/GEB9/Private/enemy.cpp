@@ -34,8 +34,6 @@ AEnemy::AEnemy()
 	IsPlayerVisible = false;
 
 	locationIndex = 0;
-
-	patrolTimer = 0;
 }
 
 void AEnemy::BeginPlay()
@@ -94,6 +92,8 @@ void AEnemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visib
 			SenseConfig->SightRadius = _visibleRange;
 			SenseConfig->LoseSightRadius = _chaseRange;
 			SenseConfig->PeripheralVisionAngleDegrees = _visibleFOV;
+
+			SenseConfig->NearClippingRadius = 100.0f;
 
 			SenseConfig->DetectionByAffiliation.bDetectEnemies = true;
 			SenseConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -162,7 +162,7 @@ void AEnemy::Turn() {
 	//SetActorRotation(rot);
 }
 
-void AEnemy::Patrol(float DeltaTime) {
+void AEnemy::Patrol() {
 	if (!locations.IsEmpty())
 	{
 		ai->MoveToLocation(locations[locationIndex]->GetActorLocation());
@@ -170,13 +170,9 @@ void AEnemy::Patrol(float DeltaTime) {
 		targetDirection.Z = 0;
 		GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, FString::SanitizeFloat(targetDirection.Length()));
 		if (targetDirection.Length() < 50.0f) {
-			patrolTimer += DeltaTime;
-			if (patrolTimer >= patrolDelay) {
-				locationIndex++;
-				patrolTimer = 0.0f;
-				if (locationIndex >= locations.Num())
-					locationIndex = 0;
-			}
+			locationIndex++;
+			if (locationIndex >= locations.Num())
+				locationIndex = 0;
 		}
 		
 	}

@@ -42,7 +42,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 }
 void UEnemyFSM::PatrolState(float DeltaTime)
 {
-	me->Patrol(DeltaTime);
+	me->Patrol();
 	if (me->playerExposedTime > 0.5f)
 	{
 		me->ai->StopMovement();
@@ -122,19 +122,27 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 {
 	FVector minDirection = FVector(1000000, 0 ,0);
 	int minIndex = 0;
-	for (int i = 0; i < me->locations.Num(); i++) {
-		FVector locationDirection = (me->locations[i]->GetActorLocation() - me->GetActorLocation());
+	if (me->locations.Num() != 0) {
+		for (int i = 0; i < me->locations.Num(); i++) {
+			FVector locationDirection = (me->locations[i]->GetActorLocation() - me->GetActorLocation());
 
-		if (minDirection.Length() > locationDirection.Length()) {
-			minDirection = locationDirection;
-			minIndex = i;
-		}
-	};
-	AActor* minLocation = me->locations[minIndex];
+			if (minDirection.Length() > locationDirection.Length()) {
+				minDirection = locationDirection;
+				minIndex = i;
+			}
+		};
+		AActor* minLocation = me->locations[minIndex];
 
-	me->ai->MoveToLocation(minLocation->GetActorLocation());
+		me->ai->MoveToLocation(minLocation->GetActorLocation());
+	}
+	else {
+		minDirection = me->originPos - me->GetActorLocation();
+		minDirection.Z = 0;
+		me->ai->MoveToLocation(me->originPos);
+	}
 
 	minDirection.Z = 0;
+	
 
 	if (me->playerExposedTime > 1.0f || me->cctvdetected)
 	{
@@ -148,7 +156,6 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 	{
 		mstate = EEnemyState::Patrol;
 		me->locationIndex = minIndex;
-		me->patrolDelay = 0.0f;
 		me->SetStateProperty(me->PatrolState);
 		me->ai->StopMovement();
 	}
