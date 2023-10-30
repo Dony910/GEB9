@@ -108,6 +108,10 @@ public:
 	bool cctvdetected;
 	UPROPERTY(EditAnywhere, Category = PahtLocations)
 	TArray<AActor *> locations;
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float patrolDelay;
+	UPROPERTY(VisibleAnywhere, Category = Enemy)
+	float patrolTimer;
 
 	FVector GetPlayerDir();
 
@@ -124,7 +128,7 @@ public:
 
 	void Turn();
 
-	void Patrol();
+	void Patrol(float DeltaTime);
 
 	int locationIndex;
 };

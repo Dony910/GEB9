@@ -34,6 +34,8 @@ AEnemy::AEnemy()
 	IsPlayerVisible = false;
 
 	locationIndex = 0;
+
+	patrolTimer = 0;
 }
 
 void AEnemy::BeginPlay()
@@ -162,7 +164,7 @@ void AEnemy::Turn() {
 	//SetActorRotation(rot);
 }
 
-void AEnemy::Patrol() {
+void AEnemy::Patrol(float DeltaTime) {
 	if (!locations.IsEmpty())
 	{
 		ai->MoveToLocation(locations[locationIndex]->GetActorLocation());
@@ -170,9 +172,14 @@ void AEnemy::Patrol() {
 		targetDirection.Z = 0;
 		GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, FString::SanitizeFloat(targetDirection.Length()));
 		if (targetDirection.Length() < 50.0f) {
-			locationIndex++;
-			if (locationIndex >= locations.Num())
-				locationIndex = 0;
+			patrolTimer += DeltaTime;
+			GEngine->AddOnScreenDebugMessage(13, 0.1f, FColor::Red, FString::SanitizeFloat(patrolTimer));
+			if (patrolTimer >= patrolDelay) {
+				locationIndex++;
+				patrolTimer = 0.0f;
+				if (locationIndex >= locations.Num())
+					locationIndex = 0;
+			}
 		}
 		
 	}
