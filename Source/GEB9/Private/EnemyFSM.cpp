@@ -42,7 +42,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 }
 void UEnemyFSM::PatrolState(float DeltaTime)
 {
-	me->Patrol(DeltaTime);
+	me->Patrol();
 	if (me->playerExposedTime > 0.5f)
 	{
 		me->ai->StopMovement();
@@ -142,6 +142,7 @@ void UEnemyFSM::ReturnState(float DeltaTime)
 	}
 
 	minDirection.Z = 0;
+	
 
 	if (me->playerExposedTime > 1.0f || me->cctvdetected)
 	{
