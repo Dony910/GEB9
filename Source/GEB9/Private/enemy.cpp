@@ -95,6 +95,8 @@ void AEnemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visib
 			SenseConfig->LoseSightRadius = _chaseRange;
 			SenseConfig->PeripheralVisionAngleDegrees = _visibleFOV;
 
+			SenseConfig->NearClippingRadius = 100.0f;
+
 			SenseConfig->DetectionByAffiliation.bDetectEnemies = true;
 			SenseConfig->DetectionByAffiliation.bDetectFriendlies = true;
 			SenseConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -171,6 +173,7 @@ void AEnemy::Patrol(float DeltaTime) {
 		GEngine->AddOnScreenDebugMessage(10, 0.1f, FColor::Yellow, FString::SanitizeFloat(targetDirection.Length()));
 		if (targetDirection.Length() < 50.0f) {
 			patrolTimer += DeltaTime;
+			GEngine->AddOnScreenDebugMessage(13, 0.1f, FColor::Red, FString::SanitizeFloat(patrolTimer));
 			if (patrolTimer >= patrolDelay) {
 				locationIndex++;
 				patrolTimer = 0.0f;
