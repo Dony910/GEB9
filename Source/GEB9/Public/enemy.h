@@ -37,6 +37,7 @@ class GEB9_API AEnemy : public ACharacter
 
 public:
 	AEnemy();
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
 
 protected:
 	virtual void BeginPlay() override;
