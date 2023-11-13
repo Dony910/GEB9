@@ -47,10 +47,27 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Alert;
+		me->checkTarget = me->player->GetActorLocation();
 		me->SetStateProperty(me->AlertState);
 		me->playerExposedTime = 0.0f;
 	}
-	else if (me->soundHeardTime > 5.0f || me->cctvdetected)
+	else if (me->soundHeardTime > 3.0f)
+	{
+		me->ai->StopMovement();
+		mstate = EEnemyState::Alert;
+		me->checkTarget = me->player->GetActorLocation();
+		me->SetStateProperty(me->AlertState);
+		me->soundHeardTime = 0.0f;
+	}
+	else if (me->testaggroevent)
+	{
+		me->ai->StopMovement();
+		mstate = EEnemyState::Alert;
+		me->checkTarget = me->player->GetActorLocation();
+		me->SetStateProperty(me->AlertState);
+		me->soundHeardTime = 0.0f;
+	}
+	else if (me->cctvdetected)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Check;
