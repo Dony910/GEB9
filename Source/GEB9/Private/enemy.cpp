@@ -184,3 +184,9 @@ void AEnemy::Patrol(float DeltaTime) {
 		
 	}
 }
+
+
+void AEnemy::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const {
+	OutLocation = GetMesh()->GetSocketLocation("headsocket");
+	OutRotation = GetMesh()->GetSocketRotation("headsocket");
+}

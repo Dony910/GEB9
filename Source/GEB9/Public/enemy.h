@@ -37,6 +37,7 @@ class GEB9_API AEnemy : public ACharacter
 
 public:
 	AEnemy();
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -53,7 +54,7 @@ public:
 	FVector originPos;
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	FRotator originRot;
-	UPROPERTY(VisibleAnywhere, Category = Enemy)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Enemy)
 	FVector checkTarget;
 
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -112,6 +113,9 @@ public:
 	float patrolDelay;
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	float patrolTimer;
+
+	UPROPERTY(BlueprintReadWrite, Category = Enemy)
+	bool testaggroevent;
 
 	FVector GetPlayerDir();
 
