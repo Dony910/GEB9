@@ -13,20 +13,20 @@
 #include "AIController.h"
 
 #include "enemy.generated.h"
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FStateProperty
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float visibleRange = 500;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float chaseRange = 750;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float visibleFOV = 40;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float hearingRange = 750;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float chaseSpeed = 400;
 };
 
@@ -68,17 +68,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float chaseSpeed;
 
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty PatrolState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty AlertState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty CheckState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty ReturnState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty ChaseState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty efficeiencyState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Enemy)
