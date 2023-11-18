@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #include "EnemyFSM.h"
 
@@ -13,19 +14,20 @@
 
 #include "enemy.generated.h"
 USTRUCT()
-struct FStateProperty {
+struct FStateProperty
+{
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float visibleRange=500;
+	float visibleRange = 500;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float chaseRange=750;
+	float chaseRange = 750;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float visibleFOV=40;
+	float visibleFOV = 40;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float hearingRange=750;
+	float hearingRange = 750;
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float chaseSpeed=400;
+	float chaseSpeed = 400;
 };
 
 UCLASS()
@@ -42,11 +44,11 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 public:
 	UPROPERTY(BlueprintReadOnly);
-	UEnemyFSM* fsm;
+	UEnemyFSM *fsm;
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	FVector originPos;
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
@@ -79,15 +81,15 @@ public:
 	FStateProperty efficeiencyState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Enemy)
-	UAIPerceptionComponent* AIPerception;
-	AAIController* ai;
+	UAIPerceptionComponent *AIPerception;
+	AAIController *ai;
 
-	UAISenseConfig_Sight* SightConfig;
-	UAISenseConfig_Hearing* HearingConfig;
+	UAISenseConfig_Sight *SightConfig;
+	UAISenseConfig_Hearing *HearingConfig;
 
 	UPROPERTY(VisibleAnywhere, Category = FSM)
-	ACharacter* player;
-	UCharacterMovementComponent* enemyMovement;
+	ACharacter *player;
+	UCharacterMovementComponent *enemyMovement;
 
 	UPROPERTY(BlueprintReadWrite, Category = Enemy)
 	bool IsPlayerVisible;
@@ -102,6 +104,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Enemy)
 	float soundUnHeardTime;
 
+	UPROPERTY(BlueprintReadWrite, Category = Enemy)
+	bool cctvdetected;
+	UPROPERTY(EditAnywhere, Category = PahtLocations)
+	TArray<AActor *> locations;
+
 	FVector GetPlayerDir();
 
 	void SetStateProperty(FStateProperty stateproperty);
@@ -114,4 +121,10 @@ public:
 
 	void lightout();
 	void lighton();
+
+	void Turn();
+
+	void Patrol();
+
+	int locationIndex;
 };
