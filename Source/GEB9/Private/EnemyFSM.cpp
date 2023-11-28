@@ -59,26 +59,35 @@ void UEnemyFSM::PatrolState(float DeltaTime)
 		me->SetStateProperty(me->AlertState);
 		me->soundHeardTime = 0.0f;
 	}
-	else if (me->testaggroevent)
+	//eventhandling
+	else if (me->alertevent)
 	{
 		me->ai->StopMovement();
-		me->checkTarget = me->player->GetActorLocation();
 		mstate = EEnemyState::Alert;
 		me->SetStateProperty(me->AlertState);
 		me->soundHeardTime = 0.0f;
+		me->alertevent = false;
 	}
-	else if (me->cctvdetected)
+	else if (me->checkevent)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Check;
-		me->checkTarget = me->player->GetActorLocation();
 		me->SetStateProperty(me->CheckState);
 		me->soundHeardTime = 0.0f;
+		me->checkevent = false;
+	}
+	else if (me->chaseevent)
+	{
+		me->ai->StopMovement();
+		mstate = EEnemyState::Chase;
+		me->SetStateProperty(me->ChaseState);
+		me->soundHeardTime = 0.0f;
+		me->chaseevent = false;
 	}
 };
 
 void UEnemyFSM::AlertState(float DeltaTime) {
-	if (me->playerExposedTime > 0.75f || me->cctvdetected)
+	if (me->playerExposedTime > 0.75f)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Chase;
@@ -100,24 +109,50 @@ void UEnemyFSM::AlertState(float DeltaTime) {
 		me->SetStateProperty(me->ReturnState);
 		me->playerUnExposedTime = 0.0f;
 	}
+
+	//eventhandling
+	else if (me->checkevent)
+	{
+		me->ai->StopMovement();
+		mstate = EEnemyState::Check;
+		me->SetStateProperty(me->CheckState);
+		me->soundHeardTime = 0.0f;
+		me->checkevent = false;
+	}
+	else if (me->chaseevent)
+	{
+		me->ai->StopMovement();
+		mstate = EEnemyState::Chase;
+		me->SetStateProperty(me->ChaseState);
+		me->chaseevent = false;
+	}
 };
 
 void UEnemyFSM::CheckState(float DeltaTime) {
 	me->ai->MoveToLocation(me->checkTarget);
 
-	if (me->playerExposedTime > 0.75f || me->cctvdetected)
+	if (me->playerExposedTime > 0.75f)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Chase;
 		me->SetStateProperty(me->ChaseState);
 		me->playerExposedTime = 0.0f;
 	}
-	else if ((me->checkTarget - me->GetActorLocation()).Length() < 50.0f)
+	else if ((me->checkTarget - me->GetActorLocation()).Length() < 100.0f)
 	{
 		mstate = EEnemyState::Alert;
 		me->SetStateProperty(me->AlertState);
 		me->playerExposedTime = 0.0f;
 		me->ai->StopMovement();
+	}
+
+	//eventhandling
+	else if (me->chaseevent)
+	{
+		me->ai->StopMovement();
+		mstate = EEnemyState::Chase;
+		me->SetStateProperty(me->ChaseState);
+		me->chaseevent = false;
 	}
 };
 
@@ -129,6 +164,7 @@ void UEnemyFSM::ChaseState(float DeltaTime)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Return;
+		me->chaseevent = false;
 		me->SetStateProperty(me->ReturnState);
 		me->playerUnExposedTime = 0.0f;
 	}

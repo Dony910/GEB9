@@ -13,20 +13,20 @@
 #include "AIController.h"
 
 #include "enemy.generated.h"
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FStateProperty
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float visibleRange = 500;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float chaseRange = 750;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float visibleFOV = 40;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float hearingRange = 750;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	float chaseSpeed = 400;
 };
 
@@ -54,8 +54,7 @@ public:
 	FVector originPos;
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	FRotator originRot;
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Enemy)
-	FVector checkTarget;
+
 
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float visibleRange;
@@ -68,17 +67,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float chaseSpeed;
 
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty PatrolState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty AlertState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty CheckState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty ReturnState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty ChaseState;
-	UPROPERTY(EditAnywhere, Category = Enemy)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Enemy)
 	FStateProperty efficeiencyState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Enemy)
@@ -114,8 +113,19 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	float patrolTimer;
 
-	UPROPERTY(BlueprintReadWrite, Category = Enemy)
-	bool testaggroevent;
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool checkevent;
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool alertevent;
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool chaseevent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
+	FVector checkTarget;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
+	FVector AlertTarget;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
+	FVector chaseTarget;
 
 	FVector GetPlayerDir();
 
