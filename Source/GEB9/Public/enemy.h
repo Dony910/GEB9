@@ -120,6 +120,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Event)
 	bool chaseevent;
 
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool alertlookaround;
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
 	FVector checkTarget;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
