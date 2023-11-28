@@ -128,7 +128,7 @@ void AEnemy::SetHearingConfig(float _hearingRange)
 			SenseConfig->DetectionByAffiliation.bDetectFriendlies = true;
 			SenseConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
-			SenseConfig->SetMaxAge(0.1f);
+			SenseConfig->SetMaxAge(0.01f);
 
 			PerceptionComp->ConfigureSense(*SenseConfig);
 		}

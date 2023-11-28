@@ -102,7 +102,7 @@ void UEnemyFSM::AlertState(float DeltaTime) {
 		me->SetStateProperty(me->CheckState);
 		me->soundHeardTime = 0.0f;
 	}
-	else if (me->playerUnExposedTime > 5.0f)
+	else if (me->playerUnExposedTime > 5.0f && me->soundUnHeardTime > 2.0f)
 	{
 		me->ai->StopMovement();
 		mstate = EEnemyState::Return;
@@ -142,7 +142,10 @@ void UEnemyFSM::CheckState(float DeltaTime) {
 	{
 		mstate = EEnemyState::Alert;
 		me->SetStateProperty(me->AlertState);
-		me->playerExposedTime = 0.0f;
+		me->alertlookaround = true;
+		me->alertevent = true;
+		me->soundUnHeardTime = 0.0f;
+		me->playerUnExposedTime = 0.0f;
 		me->ai->StopMovement();
 	}
 
