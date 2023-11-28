@@ -94,8 +94,8 @@ void AEnemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visib
 			SenseConfig->SightRadius = _visibleRange;
 			SenseConfig->LoseSightRadius = _chaseRange;
 			SenseConfig->PeripheralVisionAngleDegrees = _visibleFOV;
-
-			SenseConfig->NearClippingRadius = 100.0f;
+			SenseConfig->AutoSuccessRangeFromLastSeenLocation = 100;
+			SenseConfig->PointOfViewBackwardOffset = 30;
 
 			SenseConfig->DetectionByAffiliation.bDetectEnemies = true;
 			SenseConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -181,7 +181,10 @@ void AEnemy::Patrol(float DeltaTime) {
 					locationIndex = 0;
 			}
 		}
-		
+	}
+	else 
+	{
+		SetActorLocationAndRotation(originPos, originRot);
 	}
 }
 
