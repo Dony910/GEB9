@@ -54,8 +54,7 @@ public:
 	FVector originPos;
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	FRotator originRot;
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Enemy)
-	FVector checkTarget;
+
 
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float visibleRange;
@@ -114,8 +113,19 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	float patrolTimer;
 
-	UPROPERTY(BlueprintReadWrite, Category = Enemy)
-	bool testaggroevent;
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool checkevent;
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool alertevent;
+	UPROPERTY(BlueprintReadWrite, Category = Event)
+	bool chaseevent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
+	FVector checkTarget;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
+	FVector AlertTarget;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = target)
+	FVector chaseTarget;
 
 	FVector GetPlayerDir();
 
