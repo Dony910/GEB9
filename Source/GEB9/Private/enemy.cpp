@@ -94,7 +94,7 @@ void AEnemy::SetSightConfig(float _visibleRange, float _chaseRange, float _visib
 			SenseConfig->SightRadius = _visibleRange;
 			SenseConfig->LoseSightRadius = _chaseRange;
 			SenseConfig->PeripheralVisionAngleDegrees = _visibleFOV;
-			SenseConfig->AutoSuccessRangeFromLastSeenLocation = 100;
+			SenseConfig->AutoSuccessRangeFromLastSeenLocation = 300;
 			SenseConfig->PointOfViewBackwardOffset = 30;
 
 			SenseConfig->DetectionByAffiliation.bDetectEnemies = true;
