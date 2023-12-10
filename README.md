@@ -7,7 +7,7 @@
 ![image](https://img.shields.io/badge/csharp-512BD4?style=flat&logo=csharp&logoColor=white)
 ---
 # Installation
-[ ] Release Page Link
+[Release Page Link](https://drive.google.com/file/d/1TYXWhKjsk5_uOx4QL4TvCu4RzWmUwKyX/view?usp=drive_link).
 
 # Game Theme  
 Sneak in Props는 실험으로 특수 능력을 가지게 된 플레이어가 실험실을 탈출하는 게임입니다  
