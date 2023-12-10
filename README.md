@@ -7,7 +7,6 @@
 ![image](https://img.shields.io/badge/csharp-512BD4?style=flat&logo=csharp&logoColor=white)
 ---
 # PV
-[![미리보기](https://github.com/Dony910/GEB9/assets/51366349/e2c45864-5d45-4675-80a0-627fc6ed9b2f)](https://www.youtube.com/watch?v=A6pyDw1Cm7A)
 <video src="./pv/SneakInProp_PV_RealFinal.mp4" controls title="Title"></video>
 
 # Installation
